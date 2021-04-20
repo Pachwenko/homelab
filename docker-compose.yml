@@ -1,0 +1,381 @@
+---
+services:
+  portainer:
+    # used to manage docker files via web GUI
+    # see https://hub.docker.com/r/portainer/portainer-ce
+    image: portainer/portainer-ce
+    container_name: portainer
+    ports:
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    restart: always
+
+  postgres:
+    # a database!
+    # see https://github.com/docker-library/docs/blob/master/postgres/README.md
+    image: _/postgres
+    container_name: postgres
+    environment:
+      - POSTGRES_PASSWORD="${POSTGRES_ADMIN_PASSWORD}"
+    volumes:
+      - /docker_mounts/postgres:/var/lib/postgresql/data
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    restart: unless-stopped
+
+  adminer:
+    # database management GUI
+    # see https://hub.docker.com/_/adminer
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
+  restart: unless-stopped
+
+  nextcloud:
+    # like office 365 but you're in control?
+    # still evaluating this
+    # https://hub.docker.com/_/nextcloud
+    image: nextcloud
+    container_name: nextcloud
+    volumes:
+      - /docker_mounts/nextcloud/data:/var/www/html
+      - /docker_mounts/nextcloud/db:/var/lib/postgresql/data
+    ports:
+      - 8090:80
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  pihole:
+    # DNS blackhole with pretty stats
+    # see https://hub.docker.com/r/pihole/pihole
+    # NOTE: On ubuntu 20.04 must make a change to systemd-resolve
+    # see https://blog.williammax.com/ubuntu-20-04-lts-docker-pihole/
+    container_name: pihole
+    image: pihole/pihole
+    ports:
+      - "53:53"
+      - "67:67/udp"
+      - "8091:80/tcp"
+    environment:
+      - TZ='America/Chicago'
+      - WEBPASSWORD="${PIHOLE_PASSWORD}"
+    volumes:
+       - /docker_mounts/pihole/pihole:/etc/pihole/
+       - /docker_mounts/pihole/dnsmasq.d:/etc/dnsmasq.d/
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    restart: unless-stopped
+
+  homeassistant:
+    # Home automation? Still evaluating - don't think I have a use for this...
+    # see https://hub.docker.com/r/homeassistant/home-assistant
+    container_name: homeassistant
+    image: homeassistant/home-assistant:stable
+    ports:
+      # docs say to use host networking.. I dont want to
+      # but I have no idea what ports this dang thing uses
+      - "8123:8123"
+      - "8092:443"
+      - "8093:80"
+    volumes:
+      - /docker_mounts/homeassistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    restart: unless-stopped
+
+  unifi-controller:
+    # To control Unifi devices e.g. Unifi NanoHD wifi access point
+    # see https://hub.docker.com/r/linuxserver/unifi-controller
+    # There's annoying bits to this like in order to adopt your
+    # access point you must ssh into it.. that's covered in the abdove docs
+    image: linuxserver/unifi-controller
+    container_name: unifi-controller
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - MEM_LIMIT=256M # default is 1024M
+    volumes:
+      - /docker_mounts/unifi/config:/config
+    ports:
+      - 3478:3478/udp
+      - 10001:10001/udp
+      - 8080:8080
+      - 8443:8443
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    restart: unless-stopped
+
+  plex:
+    # media server
+    # see https://hub.docker.com/r/plexinc/pms-docker
+    image: plexinc/pms-docker
+    container_name: plex
+    restart: unless-stopped
+    ports:
+      - 32400:32400/tcp
+      - 127.0.0.1:3005:3005/tcp
+      - 127.0.0.1:8324:8324/tcp
+      - 127.0.0.1:32469:32469/tcp
+      - 127.0.0.1:1900:1900/udp
+      - 127.0.0.1:32410:32410/udp
+      - 127.0.0.1:32412:32412/udp
+      - 127.0.0.1:32413:32413/udp
+      - 127.0.0.1:32414:32414/udp
+    environment:
+      - TZ=America/Chicago
+      - PLEX_CLAIM="${PLEX_CLAIM}"
+      - ADVERTISE_IP="${PLEX_ADVERTISE_IP}"
+      - HOSTNAME="PlexServer"
+    volumes:
+      - /docker_mounts/plex/config:/config
+      - plex_transcode:/transcode
+      - /mnt/unraid:/data
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+
+  syncthing:
+    # file syncing! Syncs photos from my phone to the unraid folder
+    # see https://hub.docker.com/r/syncthing/syncthing
+    image: ghcr.io/linuxserver/syncthing
+    container_name: syncthing
+    hostname: syncthing
+    ports:
+      - "8384:8384"
+      - "22000:22000"
+      - "21027:21027/udp"
+    environment:
+      - TZ='America/Chicago'
+    volumes:
+      - /docker_mounts/syncthing/config:/config
+      - /mnt/unraid/Non-Megasync-Backups/syncthing/:/data1
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    restart: unless-stopped
+
+  watchtower:
+    # automatically updates docker containers
+    # see https://containrrr.dev/watchtower/
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    command: --interval 3600 --cleanup --rolling-restart --stop-timeout 180
+
+  tautulli:
+    # Provides pretty stats for your plex server
+    # see https://hub.docker.com/r/tautulli/tautulli
+    container_name: tautulli
+    image: tautulli/tautulli
+    ports:
+      - "8181:8181"
+    environment:
+      - TZ=America/Chicago
+    volumes:
+      - /docker_mounts/plex/config/Library/Application Support/Plex Media Server/Logs:/plex_logs:ro
+      - tatulli_config:/config
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    depends_on:
+      - plex
+
+  grafana:
+    # see https://grafana.com/docs/grafana/latest/getting-started/getting-started/
+    # for pfsense connection see https://github.com/VictorRobellini/pfSense-Dashboard
+    image: "grafana/grafana"
+    container_name: grafana
+    hostname: grafana
+    mem_limit: 2gb
+    ports:
+      - "3000:3000"
+    environment:
+      - TZ="America/New_York"
+      - GF_INSTALL_PLUGINS="grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel,grafana-worldmap-panel"
+      - GF_PATHS_DATA="/var/lib/grafana"
+      - GF_DEFAULT_INSTANCE_NAME="home"
+      - GF_ANALYTICS_REPORTING_ENABLED="false"
+      - GF_SERVER_ENABLE_GZIP="true"
+    volumes:
+      - '/docker_mounts/grafana:/var/lib/grafana'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 10m
+    network_mode: bridge
+
+  influxdb:
+    # see https://hub.docker.com/_/influxdb
+    # A database thing
+    # only used to export logs from my pfSense router firewall
+    #   via telegraf - which is then consumed by grafana
+    #   see https://github.com/VictorRobellini/pfSense-Dashboard/issues/33 about configuring
+    image: "influxdb:alpine"
+    container_name: influxdb
+    hostname: influxdb
+    mem_limit: 2gb
+    ports:
+      - "8086:8086"
+    environment:
+      - TZ="America/New_York"
+      - INFLUXDB_DATA_QUERY_LOG_ENABLED="false"
+      - INFLUXDB_REPORTING_DISABLED="true"
+      - INFLUXDB_HTTP_AUTH_ENABLED="true"
+    volumes:
+      - '/docker_mounts/influxdb:/var/lib/influxdb'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 10m
+    network_mode: bridge
+
+  heimdall:
+    # A dashboard for all your services
+    # see https://hub.docker.com/r/linuxserver/heimdall
+    image: linuxserver/heimdall
+    container_name: heimdall
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    volumes:
+      - heimdall_config:/config
+    ports:
+      - 80:80
+      - 443:443
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    restart: unless-stopped
+
+  jellyfin:
+    # replacement for plex - seems to work well but still evaluating
+    # see https://hub.docker.com/r/jellyfin/jellyfin
+    image: jellyfin/jellyfin
+    container_name: jellyfin
+    volumes:
+      - jellyfin_config:/config
+      - jellyfin_cache:/cache
+      - /mnt/unraid/Videos/:/media
+    ports:
+      - 8096:8096
+      - 127.0.0.1:8920:8920
+      - 127.0.0.1:7359:7359
+      # - 127.0.0.1:1900:1900
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    restart: "unless-stopped"
+
+  transmission-openvpn:
+    # torrent without worrying about leaking your IP
+    # see https://haugene.github.io/docker-transmission-openvpn/
+    container_name: transmission-openvpn
+    image: haugene/transmission-openvpn
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - '/mnt/unraid/:/data'
+    environment:
+      - CREATE_TUN_DEVICE=true
+      - OPENVPN_PROVIDER=TORGUARD
+      - OPENVPN_CONFIG=USA-DALLAS
+      - OPENVPN_USERNAME="${VPN_USERNAME}"
+      - OPENVPN_PASSWORD="${VPN_PASSWORD}"
+      - LOCAL_NETWORK=10.0.3.0/24
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    dns:
+      # https://www.quad9.net/
+      - 9.9.9.9
+      - 149.112.112.112
+    ports:
+      - '9091:9091'
+
+  valheim:
+    # game server
+    # see https://hub.docker.com/r/lloesche/valheim-server
+    image: lloesche/valheim-server
+    container_name: valheim
+    cap_add:
+      - sys_nice
+    volumes:
+      - /docker_mounts/valheim/config:/config
+      - /docker_mounts/valheim/data:/opt/valheim
+    ports:
+      - "32456-32457:32456-32457/udp"
+      - "9001:9001/tcp"
+    env_file:
+      # will need to see docs on this https://github.com/lloesche/valheim-server-docker
+      - /docker_mounts/valheim/valheim.env
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    restart: unless-stopped
+    stop_grace_period: 2m
+
+  unity-accelerator:
+    # Speeds up unity asset loading for development? still evaluating
+    # I probably don't need this, maybe if you had a team of unity devs
+    # see https://hub.docker.com/r/unitytechnologies/accelerator
+    image: unitytechnologies/accelerator
+    container_name: unity-accelerator
+    ports:
+      - "10078:80"
+      - "10079:443"
+      - "10080:10080"
+    volumes:
+      - unity_accelerator:/agent
+    environment:
+      # this is fine, the accelerator should never be exposed publicly
+      - USER=admin
+      - PASSWORD=admin
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+
+volumes:
+  portainer_data:
+  jellyfin_cache:
+  syncthing_config:
+  plex_config:
+  plex_transcode:
+  unifi_config:
+  jellyfin_config:
+  heimdall_config:
+  tatulli_config:
+  unity_accelerator:
