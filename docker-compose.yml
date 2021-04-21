@@ -221,7 +221,6 @@ services:
     environment:
       - TZ="America/New_York"
       - GF_INSTALL_PLUGINS="grafana-clock-panel,grafana-simple-json-datasource,grafana-piechart-panel,grafana-worldmap-panel"
-      - GF_PATHS_DATA="/var/lib/grafana"
       - GF_DEFAULT_INSTANCE_NAME="home"
       - GF_ANALYTICS_REPORTING_ENABLED="false"
       - GF_SERVER_ENABLE_GZIP="true"
@@ -231,7 +230,6 @@ services:
       driver: "json-file"
       options:
         max-size: 10m
-    network_mode: bridge
 
   influxdb:
     # see https://hub.docker.com/_/influxdb
