@@ -35,6 +35,7 @@ services:
     # database management GUI
     # see https://hub.docker.com/_/adminer
     image: adminer
+    container_name: adminer
     ports:
       - 8081:8080
     restart: always
@@ -180,6 +181,7 @@ services:
     # automatically updates docker containers
     # see https://containrrr.dev/watchtower/
     image: containrrr/watchtower
+    container_name: watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     logging:
