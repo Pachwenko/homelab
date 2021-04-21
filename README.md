@@ -1,5 +1,5 @@
 # A collections of services I may or may not use
-All docker stuff can be managed with Portainer, but additional setup will be needed on the host machine depending on what you plan to run.
+All docker stuff can be managed with Portainer, but additional setup will be needed on the host machine depending on what you plan to run. Also, you cannot import this stack into Portainer AFAIK. Some issue with not being able to find files e.g. /docker_mounts/valheim/valheim.env (which does exist).
 
 
 ## Setup
