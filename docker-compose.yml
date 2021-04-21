@@ -188,7 +188,7 @@ services:
       driver: json-file
       options:
         max-size: 10m
-    command: --interval 3600 --cleanup --rolling-restart --stop-timeout 180
+    command: --interval 3600 --cleanup --rolling-restart --stop-timeout 180s
 
   tautulli:
     # Provides pretty stats for your plex server
