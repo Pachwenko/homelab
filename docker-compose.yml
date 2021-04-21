@@ -35,10 +35,9 @@ services:
     # database management GUI
     # see https://hub.docker.com/_/adminer
     image: adminer
-    restart: always
     ports:
       - 8081:8080
-  restart: unless-stopped
+    restart: always
 
   nextcloud:
     # like office 365 but you're in control?
