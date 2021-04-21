@@ -19,7 +19,7 @@ services:
   postgres:
     # a database!
     # see https://github.com/docker-library/docs/blob/master/postgres/README.md
-    image: _/postgres
+    image: postgres
     container_name: postgres
     environment:
       - POSTGRES_PASSWORD="${POSTGRES_ADMIN_PASSWORD}"
