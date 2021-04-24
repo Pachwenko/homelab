@@ -418,7 +418,7 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      TZ: America/Chicago
+      - TZ=America/Chicago
     volumes:
       - nzbhydra_config:/config
       - /mnt/unraid/usenet:/downloads
@@ -432,8 +432,8 @@ services:
     ports:
       - 9925:80
     environment:
-      DB_TYPE: sqlite
-      TZ: America/Chicago
+      - DB_TYPE=sqlite
+      - TZ=America/Chicago
     volumes:
       - /docker_mounts/mealie/data/:/app/data
     restart: always
