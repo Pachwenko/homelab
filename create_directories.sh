@@ -6,8 +6,9 @@ sudo mkdir /docker_mounts/nextcloud
 sudo mkdir /docker_mounts/nextcloud/data
 sudo mkdir /docker_mounts/nextcloud/db
 
-sudo mkdir docker_mounts/pihole/pihole
-sudo mkdir docker_mounts/pihole/dnsmasq.d
+sudo mkdir docker_mounts/adguardhome/
+sudo mkdir docker_mounts/adguardhome/work
+sudo mkdir docker_mounts/adguardhome/config
 
 sudo mkdir docker_mounts/homeassistant
 sudo mkdir docker_mounts/homeassistant/config

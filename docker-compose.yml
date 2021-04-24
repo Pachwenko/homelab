@@ -73,23 +73,20 @@ services:
       - postgres
     restart: unless-stopped
 
-  pihole:
-    # DNS blackhole with pretty stats
-    # see https://hub.docker.com/r/pihole/pihole
-    # NOTE: On ubuntu 20.04 must make a change to systemd-resolve
-    # see https://blog.williammax.com/ubuntu-20-04-lts-docker-pihole/
-    container_name: pihole
-    image: pihole/pihole
+  adguardhome:
+    # had issues w/ pihole, and adguardhome seems more featureful
+    # still evaluation this vs pfSense with pfBlocker
+    # see https://hub.docker.com/r/adguard/adguardhome
+    container_name: adguardhome
+    image: adguard/adguardhome
     ports:
-      - "53:53"
-      - "67:67/udp"
-      - "8091:80/tcp"
-    environment:
-      - TZ='America/Chicago'
-      - WEBPASSWORD="${PIHOLE_PASSWORD}"
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "853:853/tcp"
+      - "3001:3000/tcp"
     volumes:
-       - /docker_mounts/pihole/pihole:/etc/pihole/
-       - /docker_mounts/pihole/dnsmasq.d:/etc/dnsmasq.d/
+       - /docker_mounts/adguardhome/work:/opt/adguardhome/work
+       - /docker_mounts/adguardhome/config:/opt/adguardhome/conf
     logging:
       driver: json-file
       options:
