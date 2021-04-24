@@ -217,6 +217,7 @@ services:
       driver: json-file
       options:
         max-size: 10m
+    restart: unless-stopped
     depends_on:
       - plex
 
@@ -247,6 +248,7 @@ services:
       driver: "json-file"
       options:
         max-size: 10m
+    restart: unless-stopped
 
   influxdb:
     # see https://hub.docker.com/_/influxdb
@@ -272,6 +274,7 @@ services:
       options:
         max-size: 10m
     network_mode: bridge
+    restart: unless-stopped
 
   heimdall:
     # A dashboard for all your services
@@ -383,6 +386,7 @@ services:
       driver: json-file
       options:
         max-size: 10m
+    restart: unless-stopped
 
 volumes:
   portainer_data:
