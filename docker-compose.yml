@@ -388,7 +388,44 @@ services:
         max-size: 10m
     restart: unless-stopped
 
+  unity-accelerator:
+    # Speeds up unity asset loading for development? still evaluating
+    # I probably don't need this, maybe if you had a team of unity devs
+    # see https://hub.docker.com/r/unitytechnologies/accelerator
+    image: unitytechnologies/accelerator
+    container_name: unity-accelerator
+    ports:
+      - "10078:80"
+      - "10079:443"
+      - "10080:10080"
+    volumes:
+      - unity_accelerator:/agent
+    environment:
+      # this is fine, the accelerator should never be exposed publicly
+      - USER=admin
+      - PASSWORD=admin
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+    restart: unless-stopped
+
+  nzbhydra2:
+    image: ghcr.io/linuxserver/nzbhydra2
+    container_name: nzbhydra2
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    volumes:
+      - nzbhydra_config:/config
+      - /mnt/unraid/usenet:/downloads
+    ports:
+      - 5076:5076
+    restart: unless-stopped
+
 volumes:
   jellyfin_cache:
   plex_transcode:
   unity_accelerator:
+  nzbhydra_config:
