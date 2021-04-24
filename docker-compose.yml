@@ -46,6 +46,10 @@ services:
     # see https://docs.tenable.com/nessus/Content/DeployNessusDocker.htm
     image: tenableofficial/nessus
     container_name: nessus
+    environment:
+      - USERNAME="${NESSUS_USERNAME}"
+      - PASSWORD="${NESSUS_PASSWORD}"
+      - ACTIVATION_CODE="{NESSUS_ACTIVATION_CODE}"
     ports:
       - 8834:8834
     restart: unless-stopped
