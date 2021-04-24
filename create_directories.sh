@@ -2,6 +2,18 @@
 
 sudo mkdir /docker_mounts
 
+sudo mkdir /docker_mounts/portainer
+sudo mkdir /docker_mounts/portainer/data
+
+sudo mkdir /docker_mounts/tautulli
+sudo mkdir /docker_mounts/tautulli/config
+
+sudo mkdir /docker_mounts/jellyfin
+sudo mkdir /docker_mounts/jellyfin/config
+
+sudo mkdir /docker_mounts/heimdall
+sudo mkdir /docker_mounts/heimdall/config
+
 sudo mkdir /docker_mounts/nextcloud
 sudo mkdir /docker_mounts/nextcloud/data
 sudo mkdir /docker_mounts/nextcloud/db

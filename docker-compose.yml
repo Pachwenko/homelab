@@ -9,7 +9,7 @@ services:
       - 9000:9000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
+      - /docker_mounts/portainer/data:/data
     logging:
       driver: json-file
       options:
@@ -212,7 +212,7 @@ services:
       - TZ=America/Chicago
     volumes:
       - /docker_mounts/plex/config/Library/Application Support/Plex Media Server/Logs:/plex_logs:ro
-      - tatulli_config:/config
+      - /docker_mounts/tautulli/config:/config
     logging:
       driver: json-file
       options:
@@ -286,7 +286,7 @@ services:
       - PGID=1000
       - TZ=Europe/London
     volumes:
-      - heimdall_config:/config
+      - /docker_mounts/heimdall/config>:/config
     ports:
       - 80:80
       - 443:443
@@ -302,7 +302,7 @@ services:
     image: jellyfin/jellyfin
     container_name: jellyfin
     volumes:
-      - jellyfin_config:/config
+      - /docker_mounts/jellyfin/config:/config
       - jellyfin_cache:/cache
       - /mnt/unraid/Videos/:/media
     ports:
@@ -389,13 +389,6 @@ services:
     restart: unless-stopped
 
 volumes:
-  portainer_data:
   jellyfin_cache:
-  syncthing_config:
-  plex_config:
   plex_transcode:
-  unifi_config:
-  jellyfin_config:
-  heimdall_config:
-  tatulli_config:
   unity_accelerator:
