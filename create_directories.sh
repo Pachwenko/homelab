@@ -6,12 +6,12 @@ sudo mkdir /docker_mounts/nextcloud
 sudo mkdir /docker_mounts/nextcloud/data
 sudo mkdir /docker_mounts/nextcloud/db
 
-sudo mkdir docker_mounts/adguardhome/
-sudo mkdir docker_mounts/adguardhome/work
-sudo mkdir docker_mounts/adguardhome/config
+sudo mkdir /docker_mounts/adguardhome
+sudo mkdir /docker_mounts/adguardhome/work
+sudo mkdir /docker_mounts/adguardhome/config
 
-sudo mkdir docker_mounts/homeassistant
-sudo mkdir docker_mounts/homeassistant/config
+sudo mkdir /docker_mounts/homeassistant
+sudo mkdir /docker_mounts/homeassistant/config
 
 sudo mkdir /docker_mounts/plex
 sudo mkdir /docker_mounts/plex/config
