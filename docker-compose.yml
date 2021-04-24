@@ -47,8 +47,8 @@ services:
     image: tenableofficial/nessus
     container_name: nessus
     environment:
-      - USERNAME="${NESSUS_USERNAME}"
-      - PASSWORD="${NESSUS_PASSWORD}"
+      - USERNAME="${NESSUS_USERNAME}" # optional?
+      - PASSWORD="${NESSUS_PASSWORD}" # optional?
       - ACTIVATION_CODE="{NESSUS_ACTIVATION_CODE}"
     ports:
       - 8834:8834
