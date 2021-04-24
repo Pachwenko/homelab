@@ -38,7 +38,21 @@ services:
     container_name: adminer
     ports:
       - 8081:8080
-    restart: always
+    restart: unless-stopped
+
+  nessus:
+    # Secury scanner (need to create free account)
+    # Free to scan 16 IPs, seems to do a good job
+    # see https://docs.tenable.com/nessus/Content/DeployNessusDocker.htm
+    image: tenableofficial/nessus
+    container_name: nessus
+    environment:
+      - USERNAME="${NESSUS_USERNAME}"
+      - PASSWORD="${NESSUS_PASSWORD}"
+      - ACTIVATION_CODE="{NESSUS_ACTIVATION_CODE}"
+    ports:
+      - 8834:8834
+    restart: unless-stopped
 
   nextcloud:
     # like office 365 but you're in control?
@@ -131,7 +145,6 @@ services:
     # see https://hub.docker.com/r/plexinc/pms-docker
     image: plexinc/pms-docker
     container_name: plex
-    restart: unless-stopped
     ports:
       - 32400:32400/tcp
       - 127.0.0.1:3005:3005/tcp
@@ -155,6 +168,7 @@ services:
       driver: json-file
       options:
         max-size: 10m
+    restart: unless-stopped
 
   syncthing:
     # file syncing! Syncs photos from my phone to the unraid folder
@@ -349,8 +363,8 @@ services:
       driver: json-file
       options:
         max-size: 10m
-    restart: unless-stopped
     stop_grace_period: 2m
+    restart: unless-stopped
 
   unity-accelerator:
     # Speeds up unity asset loading for development? still evaluating
