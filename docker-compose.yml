@@ -411,18 +411,32 @@ services:
     restart: unless-stopped
 
   nzbhydra2:
+    # not sure what this is - usenet search?
+    # see https://hub.docker.com/r/linuxserver/nzbhydra2
     image: ghcr.io/linuxserver/nzbhydra2
     container_name: nzbhydra2
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Europe/London
+      TZ: America/Chicago
     volumes:
       - nzbhydra_config:/config
       - /mnt/unraid/usenet:/downloads
     ports:
       - 5076:5076
     restart: unless-stopped
+
+  mealie:
+    container_name: mealie
+    image: hkotel/mealie:latest
+    ports:
+      - 9925:80
+    environment:
+      DB_TYPE: sqlite
+      TZ: America/Chicago
+    volumes:
+      - /docker_mounts/mealie/data/:/app/data
+    restart: always
 
 volumes:
   jellyfin_cache:
