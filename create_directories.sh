@@ -8,6 +8,10 @@ sudo mkdir /docker_mounts/portainer/data
 sudo mkdir /docker_mounts/tautulli
 sudo mkdir /docker_mounts/tautulli/config
 
+sudo mkdir /docker_mounts/postgres
+
+sudo mkdir /docker_mounts/mariadb
+
 sudo mkdir /docker_mounts/jellyfin
 sudo mkdir /docker_mounts/jellyfin/config
 

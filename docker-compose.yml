@@ -16,6 +16,15 @@ services:
         max-size: 10m
     restart: always
 
+  adminer:
+    # database management GUI
+    # see https://hub.docker.com/_/adminer
+    image: adminer
+    container_name: adminer
+    ports:
+      - 8081:8080
+    restart: unless-stopped
+
   postgres:
     # a database!
     # see https://github.com/docker-library/docs/blob/master/postgres/README.md
@@ -31,13 +40,19 @@ services:
         max-size: 10m
     restart: unless-stopped
 
-  adminer:
-    # database management GUI
-    # see https://hub.docker.com/_/adminer
-    image: adminer
-    container_name: adminer
-    ports:
-      - 8081:8080
+  mariadb:
+    # a database!
+    # see https://hub.docker.com/_/mariadb
+    image: mariadb
+    container_name: mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}"
+    volumes:
+      - /docker_mounts/mariadb:/var/lib/mysql
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
     restart: unless-stopped
 
   nessus:
