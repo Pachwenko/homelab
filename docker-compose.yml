@@ -425,22 +425,6 @@ services:
         max-size: 10m
     restart: unless-stopped
 
-  nzbhydra2:
-    # not sure what this is - usenet search?
-    # see https://hub.docker.com/r/linuxserver/nzbhydra2
-    image: ghcr.io/linuxserver/nzbhydra2
-    container_name: nzbhydra2
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Chicago
-    volumes:
-      - nzbhydra_config:/config
-      - /mnt/unraid/usenet:/downloads
-    ports:
-      - 5076:5076
-    restart: unless-stopped
-
   mealie:
     container_name: mealie
     image: hkotel/mealie:latest
