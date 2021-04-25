@@ -32,6 +32,8 @@ services:
     container_name: postgres
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_ADMIN_PASSWORD}
+    ports:
+      - 5432:5432
     volumes:
       - /docker_mounts/postgres:/var/lib/postgresql/data
     logging:
@@ -47,6 +49,8 @@ services:
     container_name: mariadb
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 3306:3306
     volumes:
       - /docker_mounts/mariadb:/var/lib/mysql
     logging:
