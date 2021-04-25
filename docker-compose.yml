@@ -89,7 +89,7 @@ services:
       options:
         max-size: 10m
     depends_on:
-      - postgres
+      - mariadb
     restart: unless-stopped
 
   adguardhome:
