@@ -31,7 +31,7 @@ services:
     image: postgres
     container_name: postgres
     environment:
-      - POSTGRES_PASSWORD="${POSTGRES_ADMIN_PASSWORD}"
+      - POSTGRES_PASSWORD=${POSTGRES_ADMIN_PASSWORD}
     volumes:
       - /docker_mounts/postgres:/var/lib/postgresql/data
     logging:
@@ -46,7 +46,7 @@ services:
     image: mariadb
     container_name: mariadb
     environment:
-      - MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}"
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
       - /docker_mounts/mariadb:/var/lib/mysql
     logging:
@@ -62,9 +62,9 @@ services:
     image: tenableofficial/nessus
     container_name: nessus
     environment:
-      - USERNAME="${NESSUS_USERNAME}" # optional?
-      - PASSWORD="${NESSUS_PASSWORD}" # optional?
-      - ACTIVATION_CODE="{NESSUS_ACTIVATION_CODE}"
+      - USERNAME=${NESSUS_USERNAME} # optional?
+      - PASSWORD=${NESSUS_PASSWORD} # optional?
+      - ACTIVATION_CODE=${NESSUS_ACTIVATION_CODE} # optional?
     ports:
       - 8834:8834
     restart: unless-stopped
@@ -169,8 +169,8 @@ services:
       - 127.0.0.1:32414:32414/udp
     environment:
       - TZ=America/Chicago
-      - PLEX_CLAIM="${PLEX_CLAIM}"
-      - ADVERTISE_IP="${PLEX_ADVERTISE_IP}"
+      - PLEX_CLAIM=${PLEX_CLAIM}
+      - ADVERTISE_IP=${PLEX_ADVERTISE_IP}
       - HOSTNAME="PlexServer"
     volumes:
       - /docker_mounts/plex/config:/config
@@ -344,8 +344,8 @@ services:
       - CREATE_TUN_DEVICE=true
       - OPENVPN_PROVIDER=TORGUARD
       - OPENVPN_CONFIG=USA-DALLAS
-      - OPENVPN_USERNAME="${VPN_USERNAME}"
-      - OPENVPN_PASSWORD="${VPN_PASSWORD}"
+      - OPENVPN_USERNAME=${VPN_USERNAME}
+      - OPENVPN_PASSWORD=${VPN_PASSWORD}
       - LOCAL_NETWORK=10.0.3.0/24
     logging:
       driver: json-file
